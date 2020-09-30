@@ -1,0 +1,77 @@
+<html>
+  <head>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="app">
+      <div class="form-group" v-for="(input,k) in inputs" :key="k">
+        <input type="text" class="form-control" v-model="input.name" />
+        <input type="text" class="form-control" v-model="input.party" />
+        <span>
+          <i
+            class="fas fa-minus-circle"
+            @click="remove(k)"
+            v-show="k || ( !k && inputs.length > 1)"
+            >Remove</i
+          >
+          <i
+            class="fas fa-plus-circle"
+            @click="add(k)"
+            v-show="k == inputs.length-1"
+            >Add fields</i
+          >
+        </span>
+      </div>
+      <button @click="addCandidate">Submit</button>
+    </div>
+    <script src="https://unpkg.com/vue"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.min.js"
+      integrity="sha512-quHCp3WbBNkwLfYUMd+KwBAgpVukJu5MncuQaWXgCrfgcxCJAq/fo+oqrRKOj+UKEmyMCG3tb8RB63W+EmrOBg=="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      new Vue({
+        el: "#app",
+
+        data() {
+          return {
+            inputs: [
+              {
+                name: "",
+                party: "",
+              },
+            ],
+          };
+        },
+
+        methods: {
+          add() {
+            this.inputs.push({
+              name: "",
+              party: "",
+            });
+            console.log(this.inputs);
+          },
+
+          remove(index) {
+            this.inputs.splice(index, 1);
+          },
+
+          addCandidate() {
+            axios
+              .post("http://127.0.0.1:5000/candidates", {
+                my_prop_name: JSON.stringify(this.inputs),
+                headers: { crossorigin: true },
+              })
+              .then((response) => {})
+              .catch((error) => {});
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
